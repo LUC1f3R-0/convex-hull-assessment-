@@ -1,0 +1,27 @@
+{
+  "name": "optimal-patrol-path",
+  "version": "0.1.0",
+  "description": "CLI for an algorithmic programming assessment (stdin rectangles → stdout result).",
+  "private": true,
+  "type": "commonjs",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "dev": "tsx src/main.ts"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "cli",
+    "typescript",
+    "algorithms"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}
