@@ -1,6 +1,6 @@
 import { convexHull } from "./convex-hull.js";
 import { getRectangleCorners, normalizeRectangle, polygonPerimeter } from "./geometry.js";
-import { readStdin } from "./input.js";
+import { readProgramInput } from "./input.js";
 import type { Point, Rectangle } from "./types.js";
 
 type ParseResult =
@@ -70,20 +70,23 @@ function solve(rectangles: Rectangle[]): string {
 }
 
 async function main(): Promise<void> {
-  const raw = await readStdin();
-  const parsed = parseInput(raw);
+  try {
+    const raw = await readProgramInput();
+    const parsed = parseInput(raw);
 
-  if (!parsed.ok) {
-    console.error(parsed.message);
+    if (!parsed.ok) {
+      console.error(parsed.message);
+      process.exitCode = 1;
+      return;
+    }
+
+    const output = solve(parsed.rectangles);
+    const inputBlock = raw.trimEnd();
+    process.stdout.write(`Input:\n${inputBlock}\n\nOutput:\n${output}\n`);
+  } catch (error: unknown) {
+    console.error(error instanceof Error ? error.message : error);
     process.exitCode = 1;
-    return;
   }
-
-  const output = solve(parsed.rectangles);
-  process.stdout.write(`${output}\n`);
 }
 
-main().catch((error: unknown) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+main();
