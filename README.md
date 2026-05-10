@@ -1,61 +1,77 @@
 # optimal-patrol-path
 
-## Project Overview
-
-**optimal-patrol-path** is a small TypeScript CLI for an algorithmic programming assessment. The program is intended to read rectangle coordinates from standard input and write a single computed result to standard output. It is a console-style solution: no web server, no database, and no frontend.
-
-This repository currently contains only project scaffolding, scripts, and placeholders. The assessment logic is not implemented yet.
-
-## How to Install
+## Get started
 
 Requirements: **Node.js 18+** and **npm**.
 
 ```bash
 cd optimal-patrol-path
 npm install
+npm run build
 ```
 
-## How to Run
+Run the program:
 
-**Development** (run TypeScript directly):
+```bash
+npm start
+```
+
+To run TypeScript without building:
 
 ```bash
 npm run dev
 ```
 
-**Production-style** (compile, then run Node on the output):
+---
+
+## How to use it
+
+### Input
+
+- The first line is **N**, the number of axis-aligned rectangles (**positive integer**).
+- After that you must provide exactly **4 × N** numeric coordinate values (whitespace-separated). They can be split across several lines.
+- Each group of four values is one rectangle as **x1 y1 x2 y2** (two opposite corners; order and sign are handled inside the program).
+
+**Interactive terminal:** type the first line (N), press Enter, then keep entering lines until the program has received **4 × N** numbers in total. It stops as soon as the count is correct (no need to send end-of-file).
+
+**Piped or redirected input:** supply the same text on stdin, for example:
 
 ```bash
-npm run build
-npm start
+npm start < path/to/input.txt
 ```
 
-You can pipe a test file:
+### What you should see (results)
 
-```bash
-npm run build && npm start < test-inputs/sample-1.txt
+On success, **standard output** is a single line: the convex-hull perimeter as a fixed-decimal number (**10** digits after the decimal point), followed by a newline. For example:
+
+```text
+12.0000000000
 ```
 
-## Input Format
+If the data is invalid (bad N, wrong number of coordinates, or non-numeric values), the program prints a short message on **standard error** and exits with a non-zero status; it does not print an answer on stdout.
 
-> **TODO:** Document the exact stdin format once the problem statement is finalized (line count, coordinate order, separators, integer vs. floating-point, etc.).
+---
 
-Expected shape at a high level: rectangle definitions read from stdin, to be parsed in `src/main.ts` when implementation begins.
+## Quick examples
 
-## Output Format
+One rectangle:
 
-> **TODO:** Document the exact stdout format (precision, trailing newline, single value vs. multiple lines).
+```text
+1
+0 0 4 2
+```
 
-## Algorithm Explanation
+Two rectangles on one line after N:
 
-> **TODO:** Replace this section with the actual approach (e.g. why rectangles are transformed the way they are, role of convex hull or patrol path, any key lemmas). No mathematical solution is described here yet.
+```text
+2
+1 1 4 3 5 9 7 5
+```
 
-## Complexity
+Same as two lines of four numbers each:
 
-> **TODO:** State time and space complexity in terms of **n** (and other parameters) after the algorithm is chosen and implemented.
-
-## Notes
-
-- Source lives under `src/`; compiled JavaScript is emitted to `dist/` by `npm run build`.
-- Placeholder modules: `geometry.ts`, `convex-hull.ts`, and `types.ts` — extend them when solving the problem; they must not contain solution logic in this skeleton.
-- Keep the solution deterministic and stdin/stdout-only unless the assessment allows otherwise.
+```text
+2
+1 1 4 3
+5 9 7 5
+```
