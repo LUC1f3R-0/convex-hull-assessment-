@@ -1,43 +1,61 @@
 import { convexHull } from "./convex-hull.js";
 import { getRectangleCorners, normalizeRectangle, polygonPerimeter } from "./geometry.js";
-import { readProgramInput } from "./input.js";
+import { readStdin } from "./input.js";
 import type { Point, Rectangle } from "./types.js";
 
-function parseInput(input: string): Rectangle[] {
-  const lines = input
+type ParseResult =
+  | { ok: true; rectangles: Rectangle[] }
+  | { ok: false; message: string };
+
+function parseInput(raw: string): ParseResult {
+  const lines = raw
     .trim()
     .split(/\n/)
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
 
-  const firstLine = lines[0];
-  if (firstLine === undefined) {
-    return [];
+  if (lines.length === 0) {
+    return { ok: false, message: "Input is empty." };
   }
 
-  const lineCount = Number(firstLine);
+  const rectangleCount = Number(lines[0]);
+  if (!Number.isFinite(rectangleCount) || !Number.isInteger(rectangleCount) || rectangleCount < 1) {
+    return { ok: false, message: "N must be a positive integer." };
+  }
+
+  const coordinateLines = lines.slice(1);
+  const coordinateText = coordinateLines.join(" ");
+  const parts = coordinateText.split(/\s+/).filter((part) => part.length > 0);
+  const expectedCount = rectangleCount * 4;
+
+  if (parts.length !== expectedCount) {
+    return {
+      ok: false,
+      message: `Expected ${expectedCount} coordinate values for ${rectangleCount} rectangles, but received ${parts.length}.`,
+    };
+  }
+
+  const values = parts.map(Number);
+  for (let index = 0; index < values.length; index++) {
+    if (!Number.isFinite(values[index])) {
+      return { ok: false, message: `Invalid non-numeric coordinate at position ${index + 1}.` };
+    }
+  }
+
   const rectangles: Rectangle[] = [];
-
-  for (let index = 1; index <= lineCount && index < lines.length; index++) {
-    const line = lines[index];
-    if (line === undefined) {
-      break;
-    }
-    const values = line
-      .split(/[\s,]+/)
-      .filter((part) => part.length > 0)
-      .map(Number);
-    if (values.length < 4) {
-      break;
-    }
-    const x1 = values[0]!;
-    const y1 = values[1]!;
-    const x2 = values[2]!;
-    const y2 = values[3]!;
-    rectangles.push(normalizeRectangle(x1, y1, x2, y2));
+  for (let rectangleIndex = 0; rectangleIndex < rectangleCount; rectangleIndex++) {
+    const base = rectangleIndex * 4;
+    rectangles.push(
+      normalizeRectangle(
+        values[base]!,
+        values[base + 1]!,
+        values[base + 2]!,
+        values[base + 3]!,
+      ),
+    );
   }
 
-  return rectangles;
+  return { ok: true, rectangles };
 }
 
 function solve(rectangles: Rectangle[]): string {
@@ -52,9 +70,16 @@ function solve(rectangles: Rectangle[]): string {
 }
 
 async function main(): Promise<void> {
-  const input = await readProgramInput();
-  const rectangles = parseInput(input);
-  const output = solve(rectangles);
+  const raw = await readStdin();
+  const parsed = parseInput(raw);
+
+  if (!parsed.ok) {
+    console.error(parsed.message);
+    process.exitCode = 1;
+    return;
+  }
+
+  const output = solve(parsed.rectangles);
   process.stdout.write(`${output}\n`);
 }
 

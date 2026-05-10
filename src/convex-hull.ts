@@ -1,16 +1,9 @@
 import { cross } from "./geometry.js";
 import type { Point } from "./types.js";
 
-function formatPointsLine(points: Point[]): string {
-  return points.map((point) => `( ${point.x}, ${point.y} )`).join(", ");
-}
-
 export function convexHull(points: Point[]): Point[] {
   if (points.length <= 1) {
-    const combinedHull = points.slice();
-    console.log("convex hull", formatPointsLine(combinedHull));
-    console.log();
-    return combinedHull;
+    return points.slice();
   }
 
   const sortedPoints = [...points].sort((a, b) => {
@@ -19,9 +12,6 @@ export function convexHull(points: Point[]): Point[] {
     }
     return a.y - b.y;
   });
-
-  console.log("sorted points", formatPointsLine(sortedPoints));
-  console.log();
 
   const uniquePoints: Point[] = [];
   for (const currentPoint of sortedPoints) {
@@ -36,17 +26,11 @@ export function convexHull(points: Point[]): Point[] {
   }
 
   if (uniquePoints.length <= 1) {
-    const combinedHull = uniquePoints.slice();
-    console.log("convex hull", formatPointsLine(combinedHull));
-    console.log();
-    return combinedHull;
+    return uniquePoints.slice();
   }
 
   if (uniquePoints.length === 2) {
-    const combinedHull = uniquePoints.slice();
-    console.log("convex hull", formatPointsLine(combinedHull));
-    console.log();
-    return combinedHull;
+    return uniquePoints.slice();
   }
 
   const lowerHull: Point[] = [];
@@ -80,14 +64,7 @@ export function convexHull(points: Point[]): Point[] {
     upperHull.push(currentPoint);
   }
 
-  console.log("lower hull", formatPointsLine(lowerHull));
-  console.log("upper hull", formatPointsLine(upperHull));
-
   lowerHull.pop();
   upperHull.pop();
-  const combinedHull = lowerHull.concat(upperHull);
-  console.log("convex hull", formatPointsLine(combinedHull));
-  console.log();
-
-  return combinedHull;
+  return lowerHull.concat(upperHull);
 }
