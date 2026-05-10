@@ -81,8 +81,7 @@ async function main(): Promise<void> {
     }
 
     const output = solve(parsed.rectangles);
-    const inputBlock = raw.trimEnd();
-    process.stdout.write(`Input:\n${inputBlock}\n\nOutput:\n${output}\n`);
+    process.stdout.write(`${output}\n`);
   } catch (error: unknown) {
     console.error(error instanceof Error ? error.message : error);
     process.exitCode = 1;
